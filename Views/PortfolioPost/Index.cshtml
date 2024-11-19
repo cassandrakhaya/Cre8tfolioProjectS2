@@ -1,114 +1,61 @@
-﻿@model System.Data.DataTable
+﻿@model IEnumerable<PersonalProjectCre8tfolio.Models.PortfolioPost>
 
 @{
-    ViewBag.Title = "Index";
+    ViewData["Title"] = "Index";
 }
-<h2>Portfolio</h2>
 
-<table class="table table-hover table-striped">
-    <tr>
-        <th>Title</th>
-        <th>Description</th>
-        @*<th>DateCreated</th> *@
-    </tr>
-    @for (int i = 0; i < Model.Rows.Count; i++)
+<link rel="stylesheet" href="~/css/PortfolioPost/PortfolioIndex.css" />
+
+
+<h1>The Portfolio Posts:</h1>
+
+<p>
+    <a asp-action="Create" class="btn btn-primary btn-lg">Create New</a>
+</p>
+<div class="grid">
+    @foreach (var item in Model)
     {
-        <tr>
-            <td>@Model.Rows[i][1]</td>
-            <td>@Model.Rows[i][2]</td>
-            @*<td>@Model.Rows[i][3]</td> *@
-        </tr>
-    }
-</table>
+        <div class="card">
+            <div class="card-header">
+                <h2>@item.Title</h2>
+            </div>
+            <div class="card-body">
+                <p>@item.Description</p>
 
-<div>
-    <a asp-controller="PortfolioPost" asp-action="Create" class="add-data-link">Add New Data</a>
+                    <div class="actions">
+                    @Html.ActionLink("Edit", "Edit", new { id = item.Id }, new { @class = "btn btn-info btn-sm" }) |
+                    @Html.ActionLink("Details", "Details", new { id = item.Id }, new { @class = "btn btn-warning btn-sm" }) |
+                    @Html.ActionLink("Delete", "Delete", new { id = item.Id }, new { @class = "btn btn-danger btn-sm" })
+                    </div>
+            </div>
+        </div>
+    }
 </div>
 
 
 
+@* <h1>De Squads:</h1>
 
+<p>
+    <a asp-action="Create" class="btn btn-primary btn-lg">Toevoegen</a>
+</p>
 
-@*<style>
-    h2 {
-        color: #4A90E2;
-        font-size: 1.8em;
-        margin-bottom: 20px;
-    }
-
-    .table-hover {
-        width: 100%;
-        border-collapse: collapse;
-    }
-
-    .table-hover th, .table-hover td {
-        padding: 12px;
-        border: 1px solid #dee2e6;
-    }
-
-    .table-hover th {
-        background-color: #f8f9fa;
-        font-weight: bold;
-        text-align: left;
-    }
-
-    .table-hover tr:hover {
-        background-color: #e9ecef;
-    }
-
-    .table-striped tr:nth-child(odd) {
-        background-color: #f2f2f2;
-    }
-
-    .add-data-link {
-        display: inline-block;
-        margin-top: 15px;
-        padding: 8px 12px;
-        color: white;
-        background-color: #28a745;
-        border-radius: 5px;
-        text-decoration: none;
-    }
-
-    .add-data-link:hover {
-        background-color: #218838;
-    }
-</style>*@
-
-
-
-
-@*@model IEnumerable<PersonalProjectCre8tfolio.Models.PortfolioPost>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Title)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Description)
-            </th>
-        </tr>
-    </thead>
-    <tbody>
+<div class="grid">
     @foreach (var item in Model)
     {
-        <tr>
-            <td>
-                @Html.DisplayNameFor(modelItem => item.Title)
-            </td>
-            <td>
-                @Html.DisplayNameFor(modelItem => item.Description)
-            </td>
-
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Title">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Title">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Title">Delete</a>
-            </td>
-        </tr>
+        <div class="card">
+            <div class="card-header">
+                <h2>@item.Name</h2>
+            </div>
+            <div class="card-body">
+                <p>@item.Description</p>
+                <div class="actions">
+                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-info btn-sm">Edit</a>
+                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-warning btn-sm">Details</a>
+                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger btn-sm">Delete</a>
+                </div>
+            </div>
+        </div>
     }
-
-</table> *@
-
-
+</div>
+ *@

@@ -29,7 +29,8 @@
     }
 
         .sidebar a:hover, .sidebar .nav-link:hover {
-            background-color: #fcc205; /* Kleur bij hover */
+            background-color: #f3e3e3;
+             /* Kleur bij hover */
             color: #000; /* Tekstkleur bij hover */
         }
 
@@ -54,16 +55,14 @@
     margin-right: 10px; /* Space between buttons */
     color: #333;
 }
-
-    .btn:hover {
-        background-color: #f89d9d; /* Yellow background */
-        color: #000; /* Black text */
+.btn:hover {
+        background-color: #db8c8c;
+        color: #000; 
     }
-
 .nav-pills .nav-link.active, .nav-pills .show > .nav-link {
     color: #fff;
-    background-color: #f55656;
-    border-color: #1861ac;
+    background-color: #db8c8c;
+    border-color: #db8c8c;
 }
 
 .border-top {

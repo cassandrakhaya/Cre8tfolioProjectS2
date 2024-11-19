@@ -1,0 +1,120 @@
+﻿/* Algemene stijl */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #fffcf5;
+    margin: 0;
+    padding: 20px;
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+/* Grid lay-out */
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+.card-header h2 {
+    font-size: 18px;
+    margin: 0 0 10px;
+}
+
+.card-body p {
+    margin: 0 0 15px;
+}
+
+/* Actieknoppen */
+.actions {
+    display: flex;
+    gap: 10px;
+}
+
+    .actions .btn {
+        text-decoration: none;
+        padding: 8px 12px;
+        font-size: 14px;
+        border-radius: 5px;
+        text-align: center;
+    }
+
+    .actions .btn-info {
+        background-color: #17a2b8;
+        color: white;
+    }
+
+    .actions .btn-warning {
+        background-color: #ffc107;
+        color: white;
+    }
+
+    .actions .btn-danger {
+        background-color: #dc3545;
+        color: white;
+    }
+
+    .actions .btn:hover {
+        opacity: 0.9;
+    }
+
+/* Grid lay-out: drie kaarten per rij */
+.grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* Altijd 3 kolommen */
+    gap: 20px; /* Afstand tussen kaarten */
+}
+
+@media (max-width: 900px) {
+    .grid {
+        grid-template-columns: repeat(2, 1fr); /* 2 kolommen op kleinere schermen */
+    }
+}
+
+@media (max-width: 600px) {
+    .grid {
+        grid-template-columns: 1fr; /* 1 kolom op heel kleine schermen */
+    }
+}
+
+/* Kaartstijl */
+.card {
+    background: #f3e3e3;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    text-align: center; /* Optioneel: centreren van tekst */
+}
+
+ul {
+    list-style-type: none; /* Removes bullet points */
+    padding: 0; /* Removes default padding */
+    margin: 0; /* Removes default margin */
+}
+
+.btn {
+    font-size: inherit; /* Ensures buttons use the global font size */
+    font-family: inherit;
+    display: inline-block;
+    padding: 12px 20px;
+    font-weight: bold;
+    text-align: center;
+    cursor: pointer;
+    text-decoration: none;
+    border: none;
+    border-radius: 5px;
+    background-color: #000000; /* Default dark background */
+    color: white; /* White text */
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+    /* Hover effect: yellow background with black text */
+    .btn:hover {
+        background-color: #f3e3e3; /* Yellow background */
+        color: #000; /* Black text */
+    }

@@ -1,41 +1,62 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Web;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Mvc;
-using System.Data;
-using System.Data.SqlClient;
 using PersonalProjectCre8tfolio.Models;
+//using Cre8tfolioBLL.Services;
+using Cre8tfolioBLL.Services;
+using Cre8tfolioBLL.Dto;
+
 
 namespace PersonalProjectCre8tfolio.Controllers
 {
+    
     public class PortfolioPostController : Controller
     {
-        private string Str = @"Data Source=CASCENNDRA\SQLEXPRESS01;Initial Catalog=CRE8TFOLIO;Integrated Security=True;";
-        //private string Str = @"Data Source=CASCENNDRA\SQLEXPRESS01;Initial Catalog=CRE8TFOLIO;Integrated Security=True;Connect Timeout=30;Encrypt=True;Trust Server Certificate=True;Application Intent=ReadWrite;Multi Subnet Failover=False";
-        // GET: PortfolioPostController
+        private readonly PortfolioService _portfolioService;
+        //PortfolioRepository portfolioRepository = new PortfolioRepository();
+
+        public PortfolioPostController(PortfolioService portfolioService)
+        {
+            _portfolioService = portfolioService;
+        }
+
         public ActionResult Index()
         {
-            //TODO: Maak een list van portfolioposts in plaats van een datatable
-            DataTable dt = new DataTable();
-            using (SqlConnection con = new SqlConnection(Str))
+            //PortfolioRepository portfolioRepository = new PortfolioRepository();
+            List<PortfolioPostDTO> postDTOs = _portfolioService.GetAllPosts();
+
+            List<PortfolioPost> posts = postDTOs.Select(dto => new PortfolioPost
             {
-                con.Open();
-                //TODO: Maak duidelijk welke data je ophaalt (welke kolommen) in plaats van *
-                string q = "Select * from PortfolioPost";
-                SqlDataAdapter da = new SqlDataAdapter(q, con);
-                da.Fill(dt);
-            }
-            return View(dt);
+                Id = dto.Id,
+                Title = dto.Title,
+                Description = dto.Description,
+            }).ToList();
+
+            //TODO: aanvragen aan repository om alle DTO's te geven
+
+            return View(posts);
         }
+
+
 
         // GET: PortfolioPostController/Details/5
         public ActionResult Details(int id)
         {
-            return View();
+            PortfolioPostDTO postDTO = _portfolioService.GetPost(id); 
+            if (postDTO == null)
+            {
+                return NotFound();
+            }
+            PortfolioPost post = new PortfolioPost
+            {
+                Id = postDTO.Id,
+                Title = postDTO.Title,
+                Description = postDTO.Description,
+            };
+            return View(post);
         }
+
+
 
         // GET: PortfolioPostController/Create
         public ActionResult Create()
@@ -48,49 +69,101 @@ namespace PersonalProjectCre8tfolio.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create(PortfolioPost portfolioPost)
         {
-            try
+            if (ModelState.IsValid)
+                //TODO: Opzoeken waar je de regels kan defineren.
             {
-                using (SqlConnection con = new SqlConnection(Str))
+                try
                 {
-                    con.Open();
-                    //TODO: met parameters gaan werken
-                    string q = "insert into PortfolioPost (Title, Description) values('" + portfolioPost.Title + "','" + portfolioPost.Description + "')";
-                    SqlCommand cmd = new SqlCommand(q, con);
-                    cmd.ExecuteNonQuery();
+                    PortfolioPostDTO postDto = new PortfolioPostDTO
+                    {
+                        Title = portfolioPost.Title,
+                        Description = portfolioPost.Description
+                    };
+                    //PortfolioRepository portfolioRepository = new PortfolioRepository();
+                    
+                    _portfolioService.CreatePost(postDto);
+                    //portfolioRepository.CreatePost(postDto);
+
+                    return RedirectToAction(nameof(Index));
                 }
-                return RedirectToAction(nameof(Index));
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                    return View(portfolioPost);
+                }
             }
-            catch
-            {
-                return View(portfolioPost);
-            }
+            return View(portfolioPost);
         }
+
+
+
 
         // GET: PortfolioPostController/Edit/5
+        //Needs to Retrieve the data for editing, just like the details GET
         public ActionResult Edit(int id)
         {
-            return View();
+            PortfolioPostDTO postDTO = _portfolioService.GetPost(id);
+            if (postDTO == null)
+            {
+                return NotFound();
+            }
+
+            PortfolioPost post = new PortfolioPost
+            {
+                Id = postDTO.Id,
+                Title = postDTO.Title,
+                Description = postDTO.Description,
+            };
+            return View(post);
         }
 
+
         // POST: PortfolioPostController/Edit/5
+        //Needs to Save the changes
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public ActionResult Edit(int id, PortfolioPost portfolioPost)
         {
-            try
+            if (ModelState.IsValid)
             {
-                return RedirectToAction(nameof(Index));
+                try
+                {
+                    PortfolioPostDTO postDTO = new PortfolioPostDTO
+                    {
+                        Id = portfolioPost.Id,
+                        Title = portfolioPost.Title,
+                        Description = portfolioPost.Description
+                    };
+                    //PortfolioRepository portfolioRepository = new PortfolioRepository();
+                    _portfolioService.EditPost(postDTO);
+                    return RedirectToAction(nameof(Index));
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                    return View(portfolioPost);
+                }
             }
-            catch
-            {
-                return View();
-            }
+            return View(portfolioPost);
         }
+
 
         // GET: PortfolioPostController/Delete/5
         public ActionResult Delete(int id)
         {
-            return View();
+            PortfolioPostDTO postDTO = _portfolioService.GetPost(id);
+            if (postDTO == null)
+            {
+                return NotFound();
+            }
+
+            PortfolioPost post = new PortfolioPost
+            {
+                Id = postDTO.Id,
+                Title = postDTO.Title,
+                Description = postDTO.Description,
+            };
+            return View(post);
         }
 
         // POST: PortfolioPostController/Delete/5
@@ -100,12 +173,39 @@ namespace PersonalProjectCre8tfolio.Controllers
         {
             try
             {
+                _portfolioService.DeletePost(id);
                 return RedirectToAction(nameof(Index));
             }
-            catch
+            catch (Exception ex)
             {
-                return View();
+                Console.WriteLine($"{ex.Message}");
+
+                PortfolioPostDTO postDTO = _portfolioService.GetPost(id);
+                if (postDTO == null)
+                {
+                    return NotFound();
+                }
+
+                PortfolioPost post = new PortfolioPost
+                {
+                    Id = postDTO.Id,
+                    Title = postDTO.Title,
+                    Description = postDTO.Description,
+                };
+                return View(post);
             }
         }
     }
+
+
+
 }
+//using (SqlConnection con = new SqlConnection(Str))
+//{
+//    con.Open();
+//    //TODO: met parameters gaan werken
+//    string q = "insert into PortfolioPost (Title, Description) values('" + portfolioPost.Title + "','" + portfolioPost.Description + "')";
+//    SqlCommand cmd = new SqlCommand(q, con);
+//    cmd.ExecuteNonQuery();
+//}
+//return RedirectToAction(nameof(Index));
