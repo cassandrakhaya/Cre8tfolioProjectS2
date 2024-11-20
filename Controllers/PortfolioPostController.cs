@@ -2,7 +2,6 @@
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using PersonalProjectCre8tfolio.Models;
-//using Cre8tfolioBLL.Services;
 using Cre8tfolioBLL.Services;
 using Cre8tfolioBLL.Dto;
 
@@ -13,7 +12,6 @@ namespace PersonalProjectCre8tfolio.Controllers
     public class PortfolioPostController : Controller
     {
         private readonly PortfolioService _portfolioService;
-        //PortfolioRepository portfolioRepository = new PortfolioRepository();
 
         public PortfolioPostController(PortfolioService portfolioService)
         {
@@ -22,7 +20,6 @@ namespace PersonalProjectCre8tfolio.Controllers
 
         public ActionResult Index()
         {
-            //PortfolioRepository portfolioRepository = new PortfolioRepository();
             List<PortfolioPostDTO> postDTOs = _portfolioService.GetAllPosts();
 
             List<PortfolioPost> posts = postDTOs.Select(dto => new PortfolioPost
@@ -79,10 +76,8 @@ namespace PersonalProjectCre8tfolio.Controllers
                         Title = portfolioPost.Title,
                         Description = portfolioPost.Description
                     };
-                    //PortfolioRepository portfolioRepository = new PortfolioRepository();
                     
                     _portfolioService.CreatePost(postDto);
-                    //portfolioRepository.CreatePost(postDto);
 
                     return RedirectToAction(nameof(Index));
                 }
@@ -134,7 +129,6 @@ namespace PersonalProjectCre8tfolio.Controllers
                         Title = portfolioPost.Title,
                         Description = portfolioPost.Description
                     };
-                    //PortfolioRepository portfolioRepository = new PortfolioRepository();
                     _portfolioService.EditPost(postDTO);
                     return RedirectToAction(nameof(Index));
                 }
