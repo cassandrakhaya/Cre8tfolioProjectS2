@@ -7,6 +7,10 @@ DotEnv.Load();
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddScoped<IBlogRepository, BlogRepository>();
+
+builder.Services.AddScoped<BlogService>();
+
 builder.Services.AddScoped<IPortfolioRepository, PortfolioRepository>();
 
 builder.Services.AddScoped<PortfolioService>();
