@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.11.35327.3
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cre8tfolioPL", "Cre8tfolioPL.csproj", "{D8F490B1-36B3-4F1E-8D66-606BC3A6076B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PersonalProjectCre8tfolio", "PersonalProjectCre8tfolio.csproj", "{D8F490B1-36B3-4F1E-8D66-606BC3A6076B}"
 	ProjectSection(ProjectDependencies) = postProject
 		{B1627541-1E88-4693-BC42-C95B28411D71} = {B1627541-1E88-4693-BC42-C95B28411D71}
 	EndProjectSection

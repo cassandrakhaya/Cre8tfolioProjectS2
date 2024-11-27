@@ -1,4 +1,4 @@
-﻿namespace Cre8tfolioPL.Models
+﻿namespace PersonalProjectCre8tfolio.Models
 {
     public class BlogPost
     {
