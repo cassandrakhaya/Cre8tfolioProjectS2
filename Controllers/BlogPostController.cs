@@ -8,18 +8,49 @@ namespace Cre8tfolioPL.Controllers
 {
     public class BlogPostController : Controller
     {
+        private readonly BlogService _blogService;
+
+        public BlogPostController(BlogService blogService)
+        {
+            _blogService = blogService;
+        }
+
         // GET: BlogPostController
         public ActionResult Index()
         {
-            return View();
+            List<BlogPostDTO>BpostDTOs = _blogService.GetAllPosts();
+
+            List<BlogPost> bposts = BpostDTOs.Select(dto => new BlogPost
+            {
+                Id = dto.Id,
+                Title = dto.Title,
+                Description = dto.Description,
+            }).ToList();
+
+            return View(bposts);
         }
 
         // GET: BlogPostController/Details/5
         public ActionResult Details(int id)
         {
-            return View();
+            var postDTO = _blogService.GetPost(id);
+            if (postDTO == null)
+            {
+                return NotFound();
+            }
+
+            var post = new BlogPost
+            {
+                Id = postDTO.Id,
+                Title = postDTO.Title,
+                Description = postDTO.Description,
+            };
+
+            return View(post);
         }
 
+
+        // GET: BlogPostController/Create
         // GET: BlogPostController/Create
         public ActionResult Create()
         {
@@ -29,43 +60,85 @@ namespace Cre8tfolioPL.Controllers
         // POST: BlogPostController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public ActionResult Create(BlogPost blogPost)
         {
-            try
+            if (ModelState.IsValid)
             {
+                var postDTO = new BlogPostDTO
+                {
+                    Title = blogPost.Title,
+                    Description = blogPost.Description,
+                };
+
+                _blogService.CreatePost(postDTO);
                 return RedirectToAction(nameof(Index));
             }
-            catch
-            {
-                return View();
-            }
+
+            return View(blogPost);
         }
 
+
+        // GET: BlogPostController/Edit/5
         // GET: BlogPostController/Edit/5
         public ActionResult Edit(int id)
         {
-            return View();
+            var postDTO = _blogService.GetPost(id);
+            if (postDTO == null)
+            {
+                return NotFound();
+            }
+
+            var post = new BlogPost
+            {
+                Id = postDTO.Id,
+                Title = postDTO.Title,
+                Description = postDTO.Description,
+            };
+
+            return View(post);
         }
 
         // POST: BlogPostController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public ActionResult Edit(int id, BlogPost blogPost)
         {
-            try
+            if (ModelState.IsValid)
             {
+                var postDTO = new BlogPostDTO
+                {
+                    Id = blogPost.Id,
+                    Title = blogPost.Title,
+                    Description = blogPost.Description,
+                };
+
+                _blogService.EditPost(postDTO);
                 return RedirectToAction(nameof(Index));
             }
-            catch
-            {
-                return View();
-            }
+
+            return View(blogPost);
         }
 
+        // POST: BlogPostController/Delete/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         // GET: BlogPostController/Delete/5
         public ActionResult Delete(int id)
         {
-            return View();
+            BlogPostDTO postDTO = _blogService.GetPost(id);
+            if (postDTO == null)
+            {
+                return NotFound();
+            }
+
+            BlogPost posts = new BlogPost
+            {
+                Id = postDTO.Id,
+                Title = postDTO.Title,
+                Description = postDTO.Description,
+            };
+
+            return View(posts);
         }
 
         // POST: BlogPostController/Delete/5
@@ -75,13 +148,30 @@ namespace Cre8tfolioPL.Controllers
         {
             try
             {
+                _blogService.DeletePost(id);
                 return RedirectToAction(nameof(Index));
             }
-            catch
+            catch (Exception ex)
             {
-                return View();
+                Console.WriteLine($"{ex.Message}");
+
+                BlogPostDTO blogPostDTO = _blogService.GetPost(id);
+                if (blogPostDTO == null)
+                {
+                    return NotFound();
+                }
+
+                BlogPost blogPost = new BlogPost
+                {
+                    Id = blogPostDTO.Id,
+                    Title = blogPostDTO.Title,
+                    Description = blogPostDTO.Description,
+                };
+                return View(blogPost);
             }
+            
         }
+
     }
 }
 
