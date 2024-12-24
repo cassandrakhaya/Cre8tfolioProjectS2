@@ -7,6 +7,8 @@ DotEnv.Load();
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
+
 builder.Services.AddScoped<IBlogRepository, BlogRepository>();
 
 builder.Services.AddScoped<BlogService>();
