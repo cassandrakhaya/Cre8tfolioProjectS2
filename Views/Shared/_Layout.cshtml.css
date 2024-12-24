@@ -29,7 +29,7 @@
     }
 
         .sidebar a:hover, .sidebar .nav-link:hover {
-            background-color: #fcc205; /* Kleur bij hover */
+            background-color: #f3e3e4; /* Kleur bij hover */
             color: #000; /* Tekstkleur bij hover */
         }
 

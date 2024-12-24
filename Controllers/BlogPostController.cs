@@ -18,7 +18,7 @@ namespace Cre8tfolioPL.Controllers
         // GET: BlogPostController
         public ActionResult Index()
         {
-            List<BlogPostDTO>BpostDTOs = _blogService.GetAllPosts();
+            List<BlogPostDTO> BpostDTOs = _blogService.GetAllPosts();
 
             List<BlogPost> bposts = BpostDTOs.Select(dto => new BlogPost
             {
@@ -119,9 +119,7 @@ namespace Cre8tfolioPL.Controllers
             return View(blogPost);
         }
 
-        // POST: BlogPostController/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
+
         // GET: BlogPostController/Delete/5
         public ActionResult Delete(int id)
         {
@@ -141,7 +139,7 @@ namespace Cre8tfolioPL.Controllers
             return View(posts);
         }
 
-        // POST: BlogPostController/Delete/5
+        //POST: BlogPostController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Delete(int id, IFormCollection collection)
@@ -169,7 +167,7 @@ namespace Cre8tfolioPL.Controllers
                 };
                 return View(blogPost);
             }
-            
+
         }
 
     }

@@ -3,8 +3,7 @@
 @{
     ViewData["Title"] = "Edit";
 }
-<link rel="stylesheet" href="~/css/PortfolioPost/PortfolioIndex.css" />
-
+<link rel="stylesheet" href="~/css/BlogPost/BlogIndex.css" />
 <h1>Edit</h1>
 
 <h4>PortfolioPost</h4>
@@ -12,8 +11,8 @@
 
 <link rel="stylesheet" href="~/css/PortfolioEdit.css" />
 
-<div class="row">
-    <div class="col-md-4">
+<div class="edit-container">
+    <div class="inner-container">
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
@@ -38,10 +37,6 @@
     <br />
     <a asp-action="Index" class="btn btn-primary btn-lg">Back to List</a>
 </div>
-
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}
 
 
 

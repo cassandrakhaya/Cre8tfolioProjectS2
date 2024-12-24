@@ -2,6 +2,7 @@
 using PersonalProjectCre8tfolio.Models;
 using Cre8tfolioBLL.Services;
 using Cre8tfolioBLL.Dto;
+using System.Data;
 
 
 namespace PersonalProjectCre8tfolio.Controllers
@@ -25,6 +26,7 @@ namespace PersonalProjectCre8tfolio.Controllers
                 Id = dto.Id,
                 Title = dto.Title,
                 Description = dto.Description,
+                ImagePath = dto.ImagePath
             }).ToList();
 
             //TODO: aanvragen aan repository om alle DTO's te geven
@@ -47,6 +49,7 @@ namespace PersonalProjectCre8tfolio.Controllers
                 Id = postDTO.Id,
                 Title = postDTO.Title,
                 Description = postDTO.Description,
+                ImagePath = postDTO.ImagePath
             };
             return View(post);
         }
@@ -65,28 +68,67 @@ namespace PersonalProjectCre8tfolio.Controllers
         public ActionResult Create(PortfolioPost portfolioPost)
         {
             if (ModelState.IsValid)
-                //TODO: Opzoeken waar je de regels kan defineren.
+            //TODO: Opzoeken waar je de regels kan defineren.
             {
                 try
                 {
                     PortfolioPostDTO postDto = new PortfolioPostDTO
                     {
                         Title = portfolioPost.Title,
-                        Description = portfolioPost.Description
+                        Description = portfolioPost.Description,
+                        ImagePath = portfolioPost.ImagePath
                     };
-                    
+
                     _portfolioService.CreatePost(postDto);
 
                     return RedirectToAction(nameof(Index));
                 }
-                catch (Exception ex)
+                catch (InvalidOperationException ex)
                 {
-                    Console.WriteLine(ex.Message);
+                    ViewData["ErrorMessage"] = "Er bestaat al een Post met deze naam";
+                    Console.WriteLine("Exception caught: " + ex.Message);
                     return View(portfolioPost);
                 }
+                //    catch (Exception)
+                //    {
+                //        ModelState.AddModelError(string.Empty, "An unexpected error occurred.");
+                //        return View(portfolioPost);
+                //    }
             }
             return View(portfolioPost);
         }
+
+
+
+        //public IActionResult Create(SquadViewModel squadViewModel)
+        //{
+        //    try
+        //    {
+        //        if (ModelState.IsValid)
+        //        {
+        //            CreateEditSquadDto squadDto = new CreateEditSquadDto()
+        //            {
+        //                Name = squadViewModel.Name,
+        //                Description = squadViewModel.Description
+        //            };
+
+        //            _squadService.CreateSquad(squadDto);
+        //            return RedirectToAction("Index");
+        //        }
+        //        return View(squadViewModel);
+        //    }
+        //    catch (DuplicateNameException ex)
+        //    {
+        //        ViewData["ErrorMessage"] = "Er bestaat al een squad met deze naam";
+        //        return View(squadViewModel);
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        return View("Create");
+        //    }
+        //}
+
+
 
 
 
@@ -188,6 +230,8 @@ namespace PersonalProjectCre8tfolio.Controllers
             }
         }
     }
+
+
 
 
 
