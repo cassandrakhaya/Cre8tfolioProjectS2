@@ -23,6 +23,12 @@
                     <h2>@item.Title</h2>
                 </div>
                 <div class="card-body">
+
+                    @if (!string.IsNullOrEmpty(item.ImagePath))
+                    {
+                        <img src="@item.ImagePath" alt="Blog Post Image" class="img-thumbnail" style="max-width: 100%; height:auto;" />
+                    }
+
                     <p>@item.Description</p>
 
                     <div class="actions">
@@ -43,3 +49,27 @@
         <p>No blog posts found.</p>
     }
 </div>
+
+
+@section Scripts {
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            var buttons = document.querySelectorAll('.details-btn');
+            
+            buttons.forEach(function(button) {
+                button.addEventListener("click", function() {
+                    var descriptionId = button.id.replace("details-btn-", "");
+                    var descriptionText = document.getElementById("description-" + descriptionId);
+
+                    if (descriptionText.style.webkitLineClamp === '4') {
+                        descriptionText.style.webkitLineClamp = 'none'; // Show full text
+                        button.textContent = "Show Less";
+                    } else {
+                        descriptionText.style.webkitLineClamp = '4'; // Clamp to 4 lines
+                        button.textContent = "Details";
+                    }
+                });
+            });
+        });
+    </script>
+}

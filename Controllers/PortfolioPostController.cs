@@ -26,7 +26,7 @@ namespace PersonalProjectCre8tfolio.Controllers
                 Id = dto.Id,
                 Title = dto.Title,
                 Description = dto.Description,
-                ImagePath = dto.ImagePath
+                //ImagePath = dto.ImagePath
             }).ToList();
 
             //TODO: aanvragen aan repository om alle DTO's te geven
@@ -49,7 +49,7 @@ namespace PersonalProjectCre8tfolio.Controllers
                 Id = postDTO.Id,
                 Title = postDTO.Title,
                 Description = postDTO.Description,
-                ImagePath = postDTO.ImagePath
+                //ImagePath = postDTO.ImagePath
             };
             return View(post);
         }
@@ -76,7 +76,7 @@ namespace PersonalProjectCre8tfolio.Controllers
                     {
                         Title = portfolioPost.Title,
                         Description = portfolioPost.Description,
-                        ImagePath = portfolioPost.ImagePath
+                        //ImagePath = portfolioPost.ImagePath
                     };
 
                     _portfolioService.CreatePost(postDto);
@@ -161,6 +161,13 @@ namespace PersonalProjectCre8tfolio.Controllers
         {
             if (ModelState.IsValid)
             {
+                if (portfolioPost == null)
+                {
+                    Console.WriteLine("portfolioPost is null");
+                }
+
+                Console.WriteLine($"PortfolioPost - Id: {portfolioPost.Id}, Title: {portfolioPost.Title}, Description: {portfolioPost.Description}");
+
                 try
                 {
                     PortfolioPostDTO postDTO = new PortfolioPostDTO

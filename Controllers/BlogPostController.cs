@@ -2,17 +2,21 @@
 using Cre8tfolioBLL.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Hosting.Internal;
 using PersonalProjectCre8tfolio.Models;
+using System.IO;
 
 namespace Cre8tfolioPL.Controllers
 {
     public class BlogPostController : Controller
     {
         private readonly BlogService _blogService;
+        private readonly IWebHostEnvironment _hostingEnvironment;
 
-        public BlogPostController(BlogService blogService)
+        public BlogPostController(BlogService blogService, IWebHostEnvironment hostingEnvironment)
         {
             _blogService = blogService;
+            _hostingEnvironment = hostingEnvironment;
         }
 
         // GET: BlogPostController
@@ -25,6 +29,7 @@ namespace Cre8tfolioPL.Controllers
                 Id = dto.Id,
                 Title = dto.Title,
                 Description = dto.Description,
+                ImagePath = dto.ImagePath
             }).ToList();
 
             return View(bposts);
@@ -44,6 +49,7 @@ namespace Cre8tfolioPL.Controllers
                 Id = postDTO.Id,
                 Title = postDTO.Title,
                 Description = postDTO.Description,
+                ImagePath = postDTO.ImagePath
             };
 
             return View(post);
@@ -60,14 +66,34 @@ namespace Cre8tfolioPL.Controllers
         // POST: BlogPostController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(BlogPost blogPost)
+        public ActionResult Create(BlogPost blogPost, IFormFile Image)
         {
             if (ModelState.IsValid)
             {
+                string uniqueFileName = null;
+                if (Image != null)
+                {
+                    string uploadsFolder = Path.Combine(_hostingEnvironment.WebRootPath, "images");
+                    
+                     if (!Directory.Exists(uploadsFolder))
+            {
+                Directory.CreateDirectory(uploadsFolder); // Create the folder if it doesn't exist
+            }
+                    
+                    uniqueFileName = Guid.NewGuid().ToString() + "_" + Image.FileName;
+                    string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+                    using (var fileStream = new FileStream(filePath, FileMode.Create))
+                    {
+                        Image.CopyTo(fileStream);
+                    }
+                }
+
                 var postDTO = new BlogPostDTO
                 {
                     Title = blogPost.Title,
                     Description = blogPost.Description,
+                    ImagePath = uniqueFileName != null ? "/images/" + uniqueFileName : null
                 };
 
                 _blogService.CreatePost(postDTO);
@@ -93,6 +119,7 @@ namespace Cre8tfolioPL.Controllers
                 Id = postDTO.Id,
                 Title = postDTO.Title,
                 Description = postDTO.Description,
+                ImagePath = postDTO.ImagePath
             };
 
             return View(post);
@@ -101,15 +128,31 @@ namespace Cre8tfolioPL.Controllers
         // POST: BlogPostController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, BlogPost blogPost)
+        public ActionResult Edit(int id, BlogPost blogPost/*, IFormFile Image*/)
         {
             if (ModelState.IsValid)
             {
+                string uniqueFileName = blogPost.ImagePath;
+
+                //if (Image != null)
+                //{
+                //    string uploadsFolder = Path.Combine(_hostingEnvironment.WebRootPath, "images");
+                //    uniqueFileName = Guid.NewGuid().ToString() + "_" + Image.FileName;
+                //    string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+                //    using (var fileStream = new FileStream(filePath, FileMode.Create))
+                //    {
+                //        Image.CopyTo(fileStream);
+                //    }
+                //};
+
+
                 var postDTO = new BlogPostDTO
                 {
                     Id = blogPost.Id,
                     Title = blogPost.Title,
                     Description = blogPost.Description,
+                    ImagePath = uniqueFileName != null ? uniqueFileName : null
                 };
 
                 _blogService.EditPost(postDTO);
@@ -134,6 +177,7 @@ namespace Cre8tfolioPL.Controllers
                 Id = postDTO.Id,
                 Title = postDTO.Title,
                 Description = postDTO.Description,
+                ImagePath = postDTO.ImagePath
             };
 
             return View(posts);
@@ -146,6 +190,17 @@ namespace Cre8tfolioPL.Controllers
         {
             try
             {
+                var postDTO = _blogService.GetPost(id);
+                if (postDTO?.ImagePath != null)
+                {
+                    // Delete the associated image from "wwwroot/images"
+                    string filePath = Path.Combine(_hostingEnvironment.WebRootPath, postDTO.ImagePath.TrimStart('/'));
+                    if (System.IO.File.Exists(filePath))
+                    {
+                        System.IO.File.Delete(filePath);
+                    }
+                }
+
                 _blogService.DeletePost(id);
                 return RedirectToAction(nameof(Index));
             }
@@ -164,6 +219,7 @@ namespace Cre8tfolioPL.Controllers
                     Id = blogPostDTO.Id,
                     Title = blogPostDTO.Title,
                     Description = blogPostDTO.Description,
+                    ImagePath = blogPostDTO.ImagePath
                 };
                 return View(blogPost);
             }
