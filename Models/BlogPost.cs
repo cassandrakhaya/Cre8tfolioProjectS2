@@ -6,9 +6,9 @@ namespace PersonalProjectCre8tfolio.Models
     {
         public int Id { get; set; }
         [Required]
-        public string? Title { get; set; }
+        public required string Title { get; set; }
         [Required]
-        public string? Description { get; set; }
+        public required string Description { get; set; }
         public string? ImagePath { get; set; }
 
         //public int DateCreated { get; set; }

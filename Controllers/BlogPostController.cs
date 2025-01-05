@@ -66,23 +66,28 @@ namespace Cre8tfolioPL.Controllers
         // POST: BlogPostController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(BlogPost blogPost, IFormFile Image)
+        public ActionResult Create(BlogPost blogPost, IFormFile? Image)
         {
             if (ModelState.IsValid)
             {
                 string uniqueFileName = null;
+                //string imagePath = null;
                 if (Image != null)
                 {
                     string uploadsFolder = Path.Combine(_hostingEnvironment.WebRootPath, "images");
                     
                      if (!Directory.Exists(uploadsFolder))
-            {
-                Directory.CreateDirectory(uploadsFolder); // Create the folder if it doesn't exist
-            }
-                    
+                    {
+                        Directory.CreateDirectory(uploadsFolder);
+                    }
+
+                    // string uniqueFileName = Guid.NewGuid().ToString() + "_" + Image.FileName;
                     uniqueFileName = Guid.NewGuid().ToString() + "_" + Image.FileName;
+                    // imagePath = Path.Combine("images", uniqueFileName);
+
                     string filePath = Path.Combine(uploadsFolder, uniqueFileName);
 
+                    //using (var fileStream = new FileStream(streamFilePath, FileMode.Create))
                     using (var fileStream = new FileStream(filePath, FileMode.Create))
                     {
                         Image.CopyTo(fileStream);
@@ -94,6 +99,7 @@ namespace Cre8tfolioPL.Controllers
                     Title = blogPost.Title,
                     Description = blogPost.Description,
                     ImagePath = uniqueFileName != null ? "/images/" + uniqueFileName : null
+                    // ImagePath = imagePath
                 };
 
                 _blogService.CreatePost(postDTO);
@@ -128,23 +134,23 @@ namespace Cre8tfolioPL.Controllers
         // POST: BlogPostController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, BlogPost blogPost/*, IFormFile Image*/)
+        public ActionResult Edit(int id, BlogPost blogPost, IFormFile? Image)
         {
             if (ModelState.IsValid)
             {
                 string uniqueFileName = blogPost.ImagePath;
 
-                //if (Image != null)
-                //{
-                //    string uploadsFolder = Path.Combine(_hostingEnvironment.WebRootPath, "images");
-                //    uniqueFileName = Guid.NewGuid().ToString() + "_" + Image.FileName;
-                //    string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+                if (Image != null)
+                {
+                    string uploadsFolder = Path.Combine(_hostingEnvironment.WebRootPath, "images");
+                    uniqueFileName = Guid.NewGuid().ToString() + "_" + Image.FileName;
+                    string filePath = Path.Combine(uploadsFolder, uniqueFileName);
 
-                //    using (var fileStream = new FileStream(filePath, FileMode.Create))
-                //    {
-                //        Image.CopyTo(fileStream);
-                //    }
-                //};
+                    using (var fileStream = new FileStream(filePath, FileMode.Create))
+                    {
+                        Image.CopyTo(fileStream);
+                    }
+                };
 
 
                 var postDTO = new BlogPostDTO
@@ -152,7 +158,7 @@ namespace Cre8tfolioPL.Controllers
                     Id = blogPost.Id,
                     Title = blogPost.Title,
                     Description = blogPost.Description,
-                    ImagePath = uniqueFileName != null ? uniqueFileName : null
+                    ImagePath = uniqueFileName != null ? "/images/" + uniqueFileName : null
                 };
 
                 _blogService.EditPost(postDTO);
