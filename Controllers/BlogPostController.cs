@@ -76,9 +76,9 @@ namespace Cre8tfolioPL.Controllers
                     string uploadsFolder = Path.Combine(_hostingEnvironment.WebRootPath, "images");
                     
                      if (!Directory.Exists(uploadsFolder))
-            {
-                Directory.CreateDirectory(uploadsFolder); // Create the folder if it doesn't exist
-            }
+                    {
+                        Directory.CreateDirectory(uploadsFolder); // Create the folder if it doesn't exist
+                    }
                     
                     uniqueFileName = Guid.NewGuid().ToString() + "_" + Image.FileName;
                     string filePath = Path.Combine(uploadsFolder, uniqueFileName);
