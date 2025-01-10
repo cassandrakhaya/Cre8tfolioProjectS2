@@ -128,23 +128,25 @@ namespace Cre8tfolioPL.Controllers
         // POST: BlogPostController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, BlogPost blogPost/*, IFormFile Image*/)
+        public ActionResult Edit(int id, BlogPost blogPost, IFormFile? Image)
         {
+            //Ook op zo'n manier verwerken bij Create
             if (ModelState.IsValid)
             {
-                string uniqueFileName = blogPost.ImagePath;
+                string imagePath = blogPost.ImagePath;
 
-                //if (Image != null)
-                //{
-                //    string uploadsFolder = Path.Combine(_hostingEnvironment.WebRootPath, "images");
-                //    uniqueFileName = Guid.NewGuid().ToString() + "_" + Image.FileName;
-                //    string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+                if (Image != null)
+                {
+                    string uploadsFolder = Path.Combine(_hostingEnvironment.WebRootPath, "images");
+                    string uniqueFileName = Guid.NewGuid().ToString() + "_" + Image.FileName;
+                    imagePath = Path.Combine("images", uniqueFileName);
+                    string filePath = Path.Combine(uploadsFolder, uniqueFileName);
 
-                //    using (var fileStream = new FileStream(filePath, FileMode.Create))
-                //    {
-                //        Image.CopyTo(fileStream);
-                //    }
-                //};
+                    using (var fileStream = new FileStream(filePath, FileMode.Create))
+                    {
+                        Image.CopyTo(fileStream);
+                    }
+                };
 
 
                 var postDTO = new BlogPostDTO
@@ -152,7 +154,7 @@ namespace Cre8tfolioPL.Controllers
                     Id = blogPost.Id,
                     Title = blogPost.Title,
                     Description = blogPost.Description,
-                    ImagePath = uniqueFileName != null ? uniqueFileName : null
+                    ImagePath = imagePath
                 };
 
                 _blogService.EditPost(postDTO);
