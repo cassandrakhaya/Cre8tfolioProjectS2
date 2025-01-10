@@ -22,13 +22,23 @@
                     <h2>@item.Title</h2>
                 </div>
                 <div class="card-body">
+
+                    @if (!string.IsNullOrEmpty(item.ImagePath))
+                    {
+                        <img src="@item.ImagePath" alt="Blog Post Image" class="img-thumbnail" style="max-width: 100%; height:auto;" />
+                    }
+
                     <p>@item.Description</p>
 
-                        <div class="actions">
-                        @Html.ActionLink("Edit", "Edit", new { id = item.Id }, new { @class = "btn btn-info btn-sm" }) |
-                        @Html.ActionLink("Details", "Details", new { id = item.Id }, new { @class = "btn btn-warning btn-sm" }) |
-                        @Html.ActionLink("Delete", "Delete", new { id = item.Id }, new { @class = "btn btn-danger btn-sm" })
-                        </div>
+                    <div class="actions">
+                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-info btn-sm">Edit</a>
+                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-warning btn-sm">Details</a>
+                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger btn-sm">Delete</a>
+
+                        @*  @Html.ActionLink("Edit", "Edit", new { id = item.Id }, new { @class = "btn btn-info btn-sm" }) |
+                @Html.ActionLink("Details", "Details", new { id = item.Id }, new { @class = "btn btn-warning btn-sm" }) |
+                @Html.ActionLink("Delete", "Delete", new { id = item.Id }, new { @class = "btn btn-danger btn-sm" }) *@
+                    </div>
                 </div>
             </div>
         }
@@ -37,15 +47,29 @@
     {
         <p>No blog posts found.</p>
     }
-    @* <div class="image-container">
-        <!-- Image upload input -->
-        <input type="file" id="image-upload" accept="image/*">
-        <div class="image-box">
-            <!-- Preview image will be displayed here -->
-            <img id="preview" src="" alt="Image Preview" style="display: none;">
-        </div>
-    </div> *@
 </div>
+@section Scripts {
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            var buttons = document.querySelectorAll('.details-btn');
+
+            buttons.forEach(function(button) {
+                button.addEventListener("click", function() {
+                    var descriptionId = button.id.replace("details-btn-", "");
+                    var descriptionText = document.getElementById("description-" + descriptionId);
+
+                    if (descriptionText.style.webkitLineClamp === '4') {
+                        descriptionText.style.webkitLineClamp = 'none'; // Show full text
+                        button.textContent = "Show Less";
+                    } else {
+                        descriptionText.style.webkitLineClamp = '4'; // Clamp to 4 lines
+                        button.textContent = "Details";
+                    }
+                });
+            });
+        });
+    </script>
+}
 
 
 

@@ -3,6 +3,7 @@ using PersonalProjectCre8tfolio.Models;
 using Cre8tfolioBLL.Services;
 using Cre8tfolioBLL.Dto;
 using System.Data;
+using static System.Net.Mime.MediaTypeNames;
 
 
 namespace PersonalProjectCre8tfolio.Controllers
@@ -11,10 +12,14 @@ namespace PersonalProjectCre8tfolio.Controllers
     public class PortfolioPostController : Controller
     {
         private readonly PortfolioService _portfolioService;
+        private readonly IWebHostEnvironment _hostingEnvironment;
 
-        public PortfolioPostController(PortfolioService portfolioService)
+
+        public PortfolioPostController(PortfolioService portfolioService, IWebHostEnvironment hostingEnvironment)
         {
             _portfolioService = portfolioService;
+            _hostingEnvironment = hostingEnvironment;
+
         }
 
         public ActionResult Index()
@@ -26,7 +31,7 @@ namespace PersonalProjectCre8tfolio.Controllers
                 Id = dto.Id,
                 Title = dto.Title,
                 Description = dto.Description,
-                //ImagePath = dto.ImagePath
+                ImagePath = dto.ImagePath
             }).ToList();
 
             //TODO: aanvragen aan repository om alle DTO's te geven
@@ -49,7 +54,7 @@ namespace PersonalProjectCre8tfolio.Controllers
                 Id = postDTO.Id,
                 Title = postDTO.Title,
                 Description = postDTO.Description,
-                //ImagePath = postDTO.ImagePath
+                ImagePath = postDTO.ImagePath
             };
             return View(post);
         }
@@ -65,36 +70,41 @@ namespace PersonalProjectCre8tfolio.Controllers
         // POST: PortfolioPostController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(PortfolioPost portfolioPost)
+        public ActionResult Create(PortfolioPost portfolioPost, IFormFile Image)
         {
             if (ModelState.IsValid)
             //TODO: Opzoeken waar je de regels kan defineren.
             {
-                try
+                string uniqueFileName = null;
+                if (Image != null)
                 {
-                    PortfolioPostDTO postDto = new PortfolioPostDTO
+                    string uploadsFolder = Path.Combine(_hostingEnvironment.WebRootPath, "images");
+
+                    if (!Directory.Exists(uploadsFolder))
                     {
-                        Title = portfolioPost.Title,
-                        Description = portfolioPost.Description,
-                        //ImagePath = portfolioPost.ImagePath
-                    };
+                        Directory.CreateDirectory(uploadsFolder); // Create the folder if it doesn't exist
+                    }
 
-                    _portfolioService.CreatePost(postDto);
+                    uniqueFileName = Guid.NewGuid().ToString() + "_" + Image.FileName;
+                    string filePath = Path.Combine(uploadsFolder, uniqueFileName);
 
-                    return RedirectToAction(nameof(Index));
+                    using (var fileStream = new FileStream(filePath, FileMode.Create))
+                    {
+                        Image.CopyTo(fileStream);
+                    }
                 }
-                catch (InvalidOperationException ex)
+
+                var postDTO = new PortfolioPostDTO
                 {
-                    ViewData["ErrorMessage"] = "Er bestaat al een Post met deze naam";
-                    Console.WriteLine("Exception caught: " + ex.Message);
-                    return View(portfolioPost);
-                }
-                //    catch (Exception)
-                //    {
-                //        ModelState.AddModelError(string.Empty, "An unexpected error occurred.");
-                //        return View(portfolioPost);
-                //    }
+                    Title = portfolioPost.Title,
+                    Description = portfolioPost.Description,
+                    ImagePath = uniqueFileName != null ? "/images/" + uniqueFileName : null
+                };
+
+                _portfolioService.CreatePost(postDTO);
+                return RedirectToAction(nameof(Index));
             }
+
             return View(portfolioPost);
         }
 
@@ -148,6 +158,8 @@ namespace PersonalProjectCre8tfolio.Controllers
                 Id = postDTO.Id,
                 Title = postDTO.Title,
                 Description = postDTO.Description,
+                ImagePath = postDTO.ImagePath
+
             };
             return View(post);
         }
@@ -161,30 +173,20 @@ namespace PersonalProjectCre8tfolio.Controllers
         {
             if (ModelState.IsValid)
             {
-                if (portfolioPost == null)
-                {
-                    Console.WriteLine("portfolioPost is null");
-                }
+                string uniqueFileName = portfolioPost.ImagePath;
 
-                Console.WriteLine($"PortfolioPost - Id: {portfolioPost.Id}, Title: {portfolioPost.Title}, Description: {portfolioPost.Description}");
+                var postDTO = new PortfolioPostDTO
+                {
+                    Id = portfolioPost.Id,
+                    Title = portfolioPost.Title,
+                    Description = portfolioPost.Description,
+                    ImagePath = uniqueFileName != null ? uniqueFileName : null
+                };
 
-                try
-                {
-                    PortfolioPostDTO postDTO = new PortfolioPostDTO
-                    {
-                        Id = portfolioPost.Id,
-                        Title = portfolioPost.Title,
-                        Description = portfolioPost.Description
-                    };
-                    _portfolioService.EditPost(postDTO);
-                    return RedirectToAction(nameof(Index));
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine(ex.Message);
-                    return View(portfolioPost);
-                }
+                _portfolioService.EditPost(postDTO);
+                return RedirectToAction(nameof(Index));
             }
+
             return View(portfolioPost);
         }
 
@@ -203,6 +205,8 @@ namespace PersonalProjectCre8tfolio.Controllers
                 Id = postDTO.Id,
                 Title = postDTO.Title,
                 Description = postDTO.Description,
+                ImagePath = postDTO.ImagePath
+
             };
             return View(post);
         }
@@ -214,6 +218,17 @@ namespace PersonalProjectCre8tfolio.Controllers
         {
             try
             {
+                var postDTO = _portfolioService.GetPost(id);
+                if (postDTO?.ImagePath != null)
+                {
+                    // Delete the associated image from "wwwroot/images"
+                    string filePath = Path.Combine(_hostingEnvironment.WebRootPath, postDTO.ImagePath.TrimStart('/'));
+                    if (System.IO.File.Exists(filePath))
+                    {
+                        System.IO.File.Delete(filePath);
+                    }
+                }
+
                 _portfolioService.DeletePost(id);
                 return RedirectToAction(nameof(Index));
             }
@@ -221,19 +236,20 @@ namespace PersonalProjectCre8tfolio.Controllers
             {
                 Console.WriteLine($"{ex.Message}");
 
-                PortfolioPostDTO postDTO = _portfolioService.GetPost(id);
-                if (postDTO == null)
+                PortfolioPostDTO portfolioPostDTO = _portfolioService.GetPost(id);
+                if (portfolioPostDTO == null)
                 {
                     return NotFound();
                 }
 
-                PortfolioPost post = new PortfolioPost
+                PortfolioPost portfolioPost = new PortfolioPost
                 {
-                    Id = postDTO.Id,
-                    Title = postDTO.Title,
-                    Description = postDTO.Description,
+                    Id = portfolioPostDTO.Id,
+                    Title = portfolioPostDTO.Title,
+                    Description = portfolioPostDTO.Description,
+                    ImagePath = portfolioPostDTO.ImagePath
                 };
-                return View(post);
+                return View(portfolioPost);
             }
         }
     }
