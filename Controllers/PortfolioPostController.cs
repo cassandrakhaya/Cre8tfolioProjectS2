@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using PersonalProjectCre8tfolio.Models;
 using Cre8tfolioBLL.Services;
 using Cre8tfolioBLL.Dto;
@@ -8,7 +9,7 @@ using static System.Net.Mime.MediaTypeNames;
 
 namespace PersonalProjectCre8tfolio.Controllers
 {
-    
+    [Authorize]
     public class PortfolioPostController : Controller
     {
         private readonly PortfolioService _portfolioService;

@@ -1,0 +1,8 @@
+﻿<form method="post">
+    <input type="text" name="username" placeholder="Type Username" />
+    <input type="password" name="password" placeholder="Type Password" />
+    <button class="btn btn-primary">Login</button>
+    
+    <input type="hidden" name="returnUrl" value="@Context.Request.Query["ReturnUrl"]" />
+
+</form>
