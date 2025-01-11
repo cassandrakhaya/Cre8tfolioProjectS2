@@ -2,6 +2,7 @@ using Cre8tfolioBLL.Services;
 using Cre8tfolioBLL.Interfaces;
 using Cre8tfolioDAL;
 using dotenv.net;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 DotEnv.Load();
 
@@ -19,6 +20,13 @@ builder.Services.AddScoped<IPortfolioRepository, PortfolioRepository>();
 
 builder.Services.AddScoped<PortfolioService>();
 
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options =>
+    {
+        options.LoginPath = "/Home/Login";
+        options.AccessDeniedPath = "/Home/AccessDenied";
+    });
+
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
@@ -28,6 +36,8 @@ if (!app.Environment.IsDevelopment())
     app.UseExceptionHandler("/Home/Error");
     app.UseHsts();
 }
+
+
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();

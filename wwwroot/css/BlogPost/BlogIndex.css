@@ -118,3 +118,14 @@ ul {
         background-color: #f3e3e3; /* Yellow background */
         color: #000; /* Black text */
     }
+    form asp-controller{
+        gap: 50px
+    }
+asp-controller {
+    position: absolute; /* Use absolute positioning */
+    top: 10px; /* Distance from the top */
+    right: 10px; /* Distance from the right */
+    margin: 0; /* Reset margin if needed */
+}
+
+    

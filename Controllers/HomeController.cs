@@ -40,7 +40,7 @@ namespace PersonalProjectCre8tfolio.Controllers
                 await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
 
 
-                return RedirectToAction("Index", "PortfolioPage");
+                return RedirectToAction("Index", "PortfolioPost");
                 //var claimsIdentity = new ClaimsIdentity(claims, "Login");
                 //await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
                 //return Redirect(ReturnUrl == null ? "/PortfolioPost" : ReturnUrl);
@@ -56,7 +56,7 @@ namespace PersonalProjectCre8tfolio.Controllers
         public async Task<ActionResult> Logout()
         {
             await HttpContext.SignOutAsync();
-            return RedirectToAction("Index");
+            return RedirectToAction("Login");
         }
     }
 }

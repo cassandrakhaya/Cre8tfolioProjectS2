@@ -19,19 +19,19 @@
     <div class="main-container">
         <div class="sidebar">
                 
-            <a class="sidebar-brand" asp-area="" asp-controller="Home" asp-action="Index">CRE8TFOLIO</a>
+            <a class="sidebar-brand" asp-area="" asp-controller="Home" asp-action="Login">CRE8TFOLIO</a>
             <ul class="sidebar-nav">
                 <li class="nav-item">
-                <a class="btn btn-link"  href="@Url.Action("Index", "Home")">Home</a>
+                <a class="btn btn-link"  href="@Url.Action("Login", "Home")">Account</a>
                 @* <a class="nav-link" asp-controller="Home" asp-action="Index">Home</a> *@
                 </li>
                 <li class="nav-item">
                     <a class="btn btn-link" href="@Url.Action("Index", "PortfolioPost")">Portfolio Post's</a>
                     @* <a class="nav-link" asp-controller="PortfolioPost" asp-action="Index">PortdolioPost</a> *@
                 </li>
-                <li class="nav-item">
+               @*  <li class="nav-item">
                     <a class="btn btn-link" href="@Url.Action("Index", "BlogPost")">Blog Post's</a>
-                </li>
+                </li> *@
             </ul>
         </div>
 
