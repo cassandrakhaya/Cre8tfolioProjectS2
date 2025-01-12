@@ -9,7 +9,7 @@ using static System.Net.Mime.MediaTypeNames;
 
 namespace PersonalProjectCre8tfolio.Controllers
 {
-    [Authorize]
+    
     public class PortfolioPostController : Controller
     {
         private readonly PortfolioService _portfolioService;
@@ -63,12 +63,14 @@ namespace PersonalProjectCre8tfolio.Controllers
 
 
         // GET: PortfolioPostController/Create
+        [Authorize]
         public ActionResult Create()
         {
             return View(new PortfolioPost());
         }
 
         // POST: PortfolioPostController/Create
+        [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Create(PortfolioPost portfolioPost, IFormFile Image)
@@ -146,6 +148,7 @@ namespace PersonalProjectCre8tfolio.Controllers
 
         // GET: PortfolioPostController/Edit/5
         //Needs to Retrieve the data for editing, just like the details GET
+        [Authorize]
         public ActionResult Edit(int id)
         {
             PortfolioPostDTO postDTO = _portfolioService.GetPost(id);
@@ -168,6 +171,7 @@ namespace PersonalProjectCre8tfolio.Controllers
 
         // POST: PortfolioPostController/Edit/5
         //Needs to Save the changes
+        [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Edit(int id, PortfolioPost portfolioPost)
@@ -193,6 +197,7 @@ namespace PersonalProjectCre8tfolio.Controllers
 
 
         // GET: PortfolioPostController/Delete/5
+        [Authorize]
         public ActionResult Delete(int id)
         {
             PortfolioPostDTO postDTO = _portfolioService.GetPost(id);
@@ -213,6 +218,7 @@ namespace PersonalProjectCre8tfolio.Controllers
         }
 
         // POST: PortfolioPostController/Delete/5
+        [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Delete(int id, IFormCollection collection)

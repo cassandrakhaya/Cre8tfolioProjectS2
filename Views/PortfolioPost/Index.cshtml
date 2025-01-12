@@ -9,48 +9,79 @@
 
 <h1>The Portfolio Posts:</h1>
 
-<p>
-    <a asp-action="Create" class="btn btn-primary btn-lg">Create New</a>
-</p>
-<div class="grid">
-    @if (Model != null)
-    {
-        @foreach (var item in Model)
+@if (User.Identity.IsAuthenticated)
+{
+
+    <p>
+        <a asp-action="Create" class="btn btn-primary btn-lg">Create New</a>
+    </p>
+    <div class="grid">
+        @if (Model != null)
         {
-            <div class="card">
-                <div class="card-header">
-                    <h2>@item.Title</h2>
-                </div>
-                <div class="card-body">
+            @foreach (var item in Model)
+            {
+                <div class="card" onclick="location.href='@Url.Action("Details","PortfolioPost", new { id = item.Id })'" >
+                    <div class="card-header">
+                        <h2>@item.Title</h2>
+                    </div>
+                    <div class="card-body">
 
-                    @if (!string.IsNullOrEmpty(item.ImagePath))
-                    {
-                        <img src="@item.ImagePath" alt="Blog Post Image" class="img-thumbnail" style="max-width: 100%; height:auto;" />
-                    }
+                        @if (!string.IsNullOrEmpty(item.ImagePath))
+                        {
+                            <img src="@item.ImagePath" alt="Blog Post Image" class="img-thumbnail" style="max-width: 100%; height:auto;" />
+                        }
 
-                    <p>@item.Description</p>
 
-                    <div class="actions">
-                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-info btn-sm">Edit</a>
-                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-warning btn-sm">Details</a>
-                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger btn-sm">Delete</a>
+                        <p>@item.Description</p>
 
-                        @*  @Html.ActionLink("Edit", "Edit", new { id = item.Id }, new { @class = "btn btn-info btn-sm" }) |
-                @Html.ActionLink("Details", "Details", new { id = item.Id }, new { @class = "btn btn-warning btn-sm" }) |
-                @Html.ActionLink("Delete", "Delete", new { id = item.Id }, new { @class = "btn btn-danger btn-sm" }) *@
+                        <div class="actions">
+                            <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-info btn-sm">Edit</a>
+                            @* <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-warning btn-sm">Details</a> *@
+                            <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger btn-sm">Delete</a>
+                        </div>
                     </div>
                 </div>
-            </div>
+            }
         }
-    }
-    else
-    {
-        <p>No blog posts found.</p>
-    }
-    <form asp-controller="Home" asp-action="Logout" method="post">
-    <button class="btn btn-primary btn-lg">Logout</button>
-</form>
-</div>
+       
+
+        <form asp-controller="Home" asp-action="Logout" method="post">
+        <button class="btn btn-primary btn-lg">Logout</button>
+    </form>
+    </div>
+}
+else
+{
+    <div class="grid">
+                @if (Model != null)
+                {
+                    @foreach (var item in Model)
+                    {
+                        <div class="card" onclick="location.href='@Url.Action("Details","PortfolioPost", new { id = item.Id })'" >
+                            <div class="card-header">
+                                <h2>@item.Title</h2>
+                            </div>
+                            <div class="card-body">
+
+                                @if (!string.IsNullOrEmpty(item.ImagePath))
+                                {
+                                    <img src="@item.ImagePath" alt="Blog Post Image" class="img-thumbnail" style="max-width: 100%; height:auto;" />
+                                }
+
+
+                                <p>@item.Description</p>
+                            </div>
+                        </div>
+                    }
+                }
+     </div>
+}
+               
+
+
+
+
+
 @section Scripts {
     <script>
         document.addEventListener("DOMContentLoaded", function() {
@@ -71,33 +102,5 @@
                 });
             });
         });
-    </script>
-}
-
-
-
-@* <h1>De Squads:</h1>
-
-<p>
-    <a asp-action="Create" class="btn btn-primary btn-lg">Toevoegen</a>
-</p>
-
-<div class="grid">
-    @foreach (var item in Model)
-    {
-        <div class="card">
-            <div class="card-header">
-                <h2>@item.Name</h2>
-            </div>
-            <div class="card-body">
-                <p>@item.Description</p>
-                <div class="actions">
-                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-info btn-sm">Edit</a>
-                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-warning btn-sm">Details</a>
-                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger btn-sm">Delete</a>
-                </div>
-            </div>
-        </div>
-    }
-</div>
- *@
+    </script>}
+  
