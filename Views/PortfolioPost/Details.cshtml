@@ -8,6 +8,10 @@
 
 <div class="details-container">
     <div class="inner-container">
+        @if (!string.IsNullOrEmpty(Model.ImagePath))
+        {
+            <img src="@Model.ImagePath" alt="Portfolio Post Image" class="img-thumbnail" style="max-width: 100%; height:auto; margin-bottom: 20px;" />
+        }
         <hr />
         <dl class="row">
             <dt class="col-sm-2">
@@ -29,6 +33,5 @@
     </div>
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-success btn-lg">Edit</a>
     <a asp-action="Index" class="btn btn-primary btn-lg">Back to List</a>
 </div>

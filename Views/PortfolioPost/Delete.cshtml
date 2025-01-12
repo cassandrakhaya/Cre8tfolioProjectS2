@@ -7,6 +7,10 @@
 
 <div class="delete-container">
     <div class="inner-container">
+        @if (!string.IsNullOrEmpty(Model.ImagePath))
+        {
+            <img src="@Model.ImagePath" alt="Portfolio Post Image" class="img-thumbnail" style="max-width: 100%; height:auto; margin-bottom: 20px;" />
+        }
         <h1>Delete</h1>
         <h3>Are you sure you want to delete the @Model.Title ?</h3>
         <hr/>

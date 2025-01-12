@@ -151,13 +151,13 @@ namespace PersonalProjectCre8tfolio.Controllers
         [Authorize]
         public ActionResult Edit(int id)
         {
-            PortfolioPostDTO postDTO = _portfolioService.GetPost(id);
+            var postDTO = _portfolioService.GetPost(id);
             if (postDTO == null)
             {
                 return NotFound();
             }
 
-            PortfolioPost post = new PortfolioPost
+            var post = new PortfolioPost
             {
                 Id = postDTO.Id,
                 Title = postDTO.Title,
@@ -174,18 +174,32 @@ namespace PersonalProjectCre8tfolio.Controllers
         [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, PortfolioPost portfolioPost)
+        public ActionResult Edit(int id, PortfolioPost portfolioPost, IFormFile? Image)
         {
             if (ModelState.IsValid)
             {
-                string uniqueFileName = portfolioPost.ImagePath;
+                string imagePath = portfolioPost.ImagePath;
+
+                if (Image != null)
+                {
+                    string uploadsFolder = Path.Combine(_hostingEnvironment.WebRootPath, "images");
+                    string uniqueFileName = Guid.NewGuid().ToString() + "_" + Image.FileName;
+                    imagePath = Path.Combine("images", uniqueFileName);
+                    string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+                    using (var fileStream = new FileStream(filePath, FileMode.Create))
+                    {
+                        Image.CopyTo(fileStream);
+                    }
+                };
+
 
                 var postDTO = new PortfolioPostDTO
                 {
                     Id = portfolioPost.Id,
                     Title = portfolioPost.Title,
                     Description = portfolioPost.Description,
-                    ImagePath = uniqueFileName != null ? uniqueFileName : null
+                    ImagePath = imagePath
                 };
 
                 _portfolioService.EditPost(postDTO);
