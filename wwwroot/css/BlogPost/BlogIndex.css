@@ -89,7 +89,12 @@ h1 {
     flex-direction: column;
     justify-content: space-between;
     text-align: center; /* Optioneel: centreren van tekst */
+    
 }
+    .card:hover {
+        background-color: #dc3545;
+    }
+
 
 ul {
     list-style-type: none; /* Removes bullet points */

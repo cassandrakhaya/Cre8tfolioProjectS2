@@ -111,41 +111,6 @@ namespace PersonalProjectCre8tfolio.Controllers
             return View(portfolioPost);
         }
 
-
-
-        //public IActionResult Create(SquadViewModel squadViewModel)
-        //{
-        //    try
-        //    {
-        //        if (ModelState.IsValid)
-        //        {
-        //            CreateEditSquadDto squadDto = new CreateEditSquadDto()
-        //            {
-        //                Name = squadViewModel.Name,
-        //                Description = squadViewModel.Description
-        //            };
-
-        //            _squadService.CreateSquad(squadDto);
-        //            return RedirectToAction("Index");
-        //        }
-        //        return View(squadViewModel);
-        //    }
-        //    catch (DuplicateNameException ex)
-        //    {
-        //        ViewData["ErrorMessage"] = "Er bestaat al een squad met deze naam";
-        //        return View(squadViewModel);
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        return View("Create");
-        //    }
-        //}
-
-
-
-
-
-
         // GET: PortfolioPostController/Edit/5
         //Needs to Retrieve the data for editing, just like the details GET
         [Authorize]
@@ -280,12 +245,3 @@ namespace PersonalProjectCre8tfolio.Controllers
 
 
 }
-//using (SqlConnection con = new SqlConnection(Str))
-//{
-//    con.Open();
-//    //TODO: met parameters gaan werken
-//    string q = "insert into PortfolioPost (Title, Description) values('" + portfolioPost.Title + "','" + portfolioPost.Description + "')";
-//    SqlCommand cmd = new SqlCommand(q, con);
-//    cmd.ExecuteNonQuery();
-//}
-//return RedirectToAction(nameof(Index));
