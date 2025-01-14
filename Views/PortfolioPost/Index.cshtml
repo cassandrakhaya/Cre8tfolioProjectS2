@@ -21,6 +21,13 @@
             @foreach (var item in Model)
             {
                 <div class="card" onclick="location.href='@Url.Action("Details","PortfolioPost", new { id = item.Id })'" >
+                    <style>
+                        .card:hover {
+                            background-color: #fceeee;
+                            cursor: pointer;
+                        }
+                    </style>
+
                     <div class="card-header">
                         <h2>@item.Title</h2>
                     </div>
@@ -58,6 +65,12 @@ else
                     @foreach (var item in Model)
                     {
                         <div class="card" onclick="location.href='@Url.Action("Details","PortfolioPost", new { id = item.Id })'" >
+                    <style>
+                        .card:hover {
+                            background-color: #fceeee;
+                            cursor: pointer;
+                        }
+                    </style>
                             <div class="card-header">
                                 <h2>@item.Title</h2>
                             </div>

@@ -73,43 +73,20 @@ namespace PersonalProjectCre8tfolio.Controllers
         [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(PortfolioPost portfolioPost, IFormFile Image)
+        public ActionResult Create(PortfolioPost portfolioPost, IFormFile? image)
         {
-            if (ModelState.IsValid)
-            //TODO: Opzoeken waar je de regels kan defineren.
+            if (!ModelState.IsValid) return View(portfolioPost);
+
+            var postDTO = new PortfolioPostDTO
             {
-                string uniqueFileName = null;
-                if (Image != null)
-                {
-                    string uploadsFolder = Path.Combine(_hostingEnvironment.WebRootPath, "images");
+                Title = portfolioPost.Title,
+                Description = portfolioPost.Description
+            };
 
-                    if (!Directory.Exists(uploadsFolder))
-                    {
-                        Directory.CreateDirectory(uploadsFolder); // Create the folder if it doesn't exist
-                    }
-
-                    uniqueFileName = Guid.NewGuid().ToString() + "_" + Image.FileName;
-                    string filePath = Path.Combine(uploadsFolder, uniqueFileName);
-
-                    using (var fileStream = new FileStream(filePath, FileMode.Create))
-                    {
-                        Image.CopyTo(fileStream);
-                    }
-                }
-
-                var postDTO = new PortfolioPostDTO
-                {
-                    Title = portfolioPost.Title,
-                    Description = portfolioPost.Description,
-                    ImagePath = uniqueFileName != null ? "/images/" + uniqueFileName : null
-                };
-
-                _portfolioService.CreatePost(postDTO);
-                return RedirectToAction(nameof(Index));
-            }
-
-            return View(portfolioPost);
+            _portfolioService.CreatePost(postDTO, image, _hostingEnvironment.WebRootPath);
+            return RedirectToAction(nameof(Index));
         }
+
 
         // GET: PortfolioPostController/Edit/5
         //Needs to Retrieve the data for editing, just like the details GET
@@ -139,39 +116,20 @@ namespace PersonalProjectCre8tfolio.Controllers
         [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, PortfolioPost portfolioPost, IFormFile? Image)
+        public ActionResult Edit(int id, PortfolioPost portfolioPost, IFormFile? image)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid) return View(portfolioPost);
+
+            var postDTO = new PortfolioPostDTO
             {
-                string imagePath = portfolioPost.ImagePath;
+                Id = portfolioPost.Id,
+                Title = portfolioPost.Title,
+                Description = portfolioPost.Description,
+                ImagePath = portfolioPost.ImagePath
+            };
 
-                if (Image != null)
-                {
-                    string uploadsFolder = Path.Combine(_hostingEnvironment.WebRootPath, "images");
-                    string uniqueFileName = Guid.NewGuid().ToString() + "_" + Image.FileName;
-                    imagePath = Path.Combine("images", uniqueFileName);
-                    string filePath = Path.Combine(uploadsFolder, uniqueFileName);
-
-                    using (var fileStream = new FileStream(filePath, FileMode.Create))
-                    {
-                        Image.CopyTo(fileStream);
-                    }
-                };
-
-
-                var postDTO = new PortfolioPostDTO
-                {
-                    Id = portfolioPost.Id,
-                    Title = portfolioPost.Title,
-                    Description = portfolioPost.Description,
-                    ImagePath = imagePath
-                };
-
-                _portfolioService.EditPost(postDTO);
-                return RedirectToAction(nameof(Index));
-            }
-
-            return View(portfolioPost);
+            _portfolioService.EditPost(postDTO, image, _hostingEnvironment.WebRootPath);
+            return RedirectToAction(nameof(Index));
         }
 
 
@@ -200,48 +158,17 @@ namespace PersonalProjectCre8tfolio.Controllers
         [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        public ActionResult Delete(PortfolioPost portfolioPost, int id)
         {
             try
             {
-                var postDTO = _portfolioService.GetPost(id);
-                if (postDTO?.ImagePath != null)
-                {
-                    // Delete the associated image from "wwwroot/images"
-                    string filePath = Path.Combine(_hostingEnvironment.WebRootPath, postDTO.ImagePath.TrimStart('/'));
-                    if (System.IO.File.Exists(filePath))
-                    {
-                        System.IO.File.Delete(filePath);
-                    }
-                }
-
-                _portfolioService.DeletePost(id);
+                _portfolioService.DeletePost(id, _hostingEnvironment.WebRootPath);
                 return RedirectToAction(nameof(Index));
             }
-            catch (Exception ex)
+            catch
             {
-                Console.WriteLine($"{ex.Message}");
-
-                PortfolioPostDTO portfolioPostDTO = _portfolioService.GetPost(id);
-                if (portfolioPostDTO == null)
-                {
-                    return NotFound();
-                }
-
-                PortfolioPost portfolioPost = new PortfolioPost
-                {
-                    Id = portfolioPostDTO.Id,
-                    Title = portfolioPostDTO.Title,
-                    Description = portfolioPostDTO.Description,
-                    ImagePath = portfolioPostDTO.ImagePath
-                };
-                return View(portfolioPost);
+                return View();
             }
         }
     }
-
-
-
-
-
 }

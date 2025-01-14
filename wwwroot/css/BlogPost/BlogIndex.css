@@ -66,6 +66,10 @@ h1 {
     grid-template-columns: repeat(3, 1fr); /* Altijd 3 kolommen */
     gap: 20px; /* Afstand tussen kaarten */
 }
+    /*.grid .card:hover {
+        background-color: #d8c7c7 !important;
+    }
+*/
 
 @media (max-width: 900px) {
     .grid {
@@ -89,11 +93,10 @@ h1 {
     flex-direction: column;
     justify-content: space-between;
     text-align: center; /* Optioneel: centreren van tekst */
-    
 }
-    .card:hover {
-        background-color: #dc3545;
-    }
+    /*.card:hover {
+        background-color: #f5c1c1;
+    }*/
 
 
 ul {
