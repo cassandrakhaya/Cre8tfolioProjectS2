@@ -25,6 +25,12 @@ h1 {
 
 .card-body p {
     margin: 0 0 15px;
+    text-size-adjust: inherit;
+    display: -webkit-box;
+    -webkit-line-clamp: 10; /* Maximaal 3 regels */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 /* Actieknoppen */
@@ -64,7 +70,7 @@ h1 {
 .grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr); /* Altijd 3 kolommen */
-    gap: 20px; /* Afstand tussen kaarten */
+    gap: 20px;  /*Afstand tussen kaarten */
 }
     /*.grid .card:hover {
         background-color: #d8c7c7 !important;
@@ -92,7 +98,7 @@ h1 {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    text-align: center; /* Optioneel: centreren van tekst */
+    text-align: center;  
 }
     /*.card:hover {
         background-color: #f5c1c1;
