@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Cre8tfolioBLL.Dto;
+using System.ComponentModel.DataAnnotations;
 
 namespace PersonalProjectCre8tfolio.Models
 {
@@ -10,7 +11,7 @@ namespace PersonalProjectCre8tfolio.Models
         [Required]
         public string? Description { get; set; }
         public string? ImagePath { get; set; }
-
+        public List<CommentDTO> Comments { get; set; }
         //public int DateCreated { get; set; }
         //public int DateUpdated { get; set; }    
 

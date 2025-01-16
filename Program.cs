@@ -13,6 +13,9 @@ builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnC
 builder.Services.AddScoped<IBlogRepository, BlogRepository>();
 
 builder.Services.AddScoped<BlogService>();
+
+builder.Services.AddScoped<CommentService>();  
+builder.Services.AddScoped<ICommentRepository, CommentRepository>();
 //Dependecy injection in constructer/ program = wat je nodig hebt voor dependecy inversion
 //Dependenct inversion is wat ik al wist
 

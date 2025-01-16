@@ -12,12 +12,14 @@ namespace PersonalProjectCre8tfolio.Controllers
 
     public class PortfolioPostController : Controller
     {
+        private readonly CommentService _commentService;
         private readonly PortfolioService _portfolioService;
         private readonly IWebHostEnvironment _hostingEnvironment;
 
 
-        public PortfolioPostController(PortfolioService portfolioService, IWebHostEnvironment hostingEnvironment)
+        public PortfolioPostController(CommentService commentService, PortfolioService portfolioService, IWebHostEnvironment hostingEnvironment)
         {
+            _commentService = commentService;
             _portfolioService = portfolioService;
             _hostingEnvironment = hostingEnvironment;
 
@@ -45,22 +47,51 @@ namespace PersonalProjectCre8tfolio.Controllers
         // GET: PortfolioPostController/Details/5
         public ActionResult Details(int id)
         {
+            // Get a specific post by ID from the service
             PortfolioPostDTO postDTO = _portfolioService.GetPost(id);
             if (postDTO == null)
             {
-                return NotFound();
+                return NotFound();  // Return 404 if the post is not found
             }
+
+            // Get the comments for the specific post
+            var comments = _commentService.GetCommentsByPostId(id);
+
+            // Create the PortfolioPost model and assign values
             PortfolioPost post = new PortfolioPost
             {
                 Id = postDTO.Id,
                 Title = postDTO.Title,
                 Description = postDTO.Description,
-                ImagePath = postDTO.ImagePath
+                ImagePath = postDTO.ImagePath,
+                Comments = comments
             };
-            return View(post);
+
+            return View(post);  // Return the view with the post and its comments
         }
 
+        [HttpPost]
+        public IActionResult AddComment(int portfolioPostId, string content, string author)
+        {
+            if (!string.IsNullOrWhiteSpace(content) && !string.IsNullOrWhiteSpace(author))
+            {
+                _commentService.AddComment(new CommentDTO
+                {
+                    PortfolioPostId = portfolioPostId,
+                    Content = content,
+                    Author = author
+                });
+            }
 
+            return RedirectToAction("Details", new { id = portfolioPostId });
+        }
+
+        [HttpPost]
+        public IActionResult DeleteComment(int commentId, int portfolioPostId)
+        {
+            _commentService.DeleteComment(commentId);
+            return RedirectToAction("Details", new { id = portfolioPostId });
+        }
 
         // GET: PortfolioPostController/Create
         [Authorize]
