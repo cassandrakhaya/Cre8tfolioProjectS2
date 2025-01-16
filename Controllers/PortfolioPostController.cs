@@ -9,7 +9,7 @@ using static System.Net.Mime.MediaTypeNames;
 
 namespace PersonalProjectCre8tfolio.Controllers
 {
-    
+
     public class PortfolioPostController : Controller
     {
         private readonly PortfolioService _portfolioService;
@@ -45,7 +45,7 @@ namespace PersonalProjectCre8tfolio.Controllers
         // GET: PortfolioPostController/Details/5
         public ActionResult Details(int id)
         {
-            PortfolioPostDTO postDTO = _portfolioService.GetPost(id); 
+            PortfolioPostDTO postDTO = _portfolioService.GetPost(id);
             if (postDTO == null)
             {
                 return NotFound();
@@ -170,5 +170,6 @@ namespace PersonalProjectCre8tfolio.Controllers
                 return View();
             }
         }
-    }
+
+    }  
 }
