@@ -52,9 +52,7 @@
         }
        
 
-        <form asp-controller="Home" asp-action="Logout" method="post">
-        <button class="btn btn-primary btn-lg">Logout</button>
-    </form>
+        
     </div>
 }
 else
@@ -88,8 +86,11 @@ else
                     }
                 }
      </div>
+   
 }
-               
+<form asp-controller="Home" asp-action="Logout" method="post">
+    <button class="btn btn-primary btn-lg">Logout</button>
+</form>
 
 
 

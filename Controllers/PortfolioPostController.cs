@@ -86,6 +86,7 @@ namespace PersonalProjectCre8tfolio.Controllers
             return RedirectToAction("Details", new { id = portfolioPostId });
         }
 
+        [Authorize]
         [HttpPost]
         public IActionResult DeleteComment(int commentId, int portfolioPostId)
         {
