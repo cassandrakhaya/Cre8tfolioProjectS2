@@ -4,8 +4,6 @@ using PersonalProjectCre8tfolio.Models;
 using Cre8tfolioBLL.Services;
 using Cre8tfolioBLL.Dto;
 using System.Data;
-using static System.Net.Mime.MediaTypeNames;
-
 
 namespace PersonalProjectCre8tfolio.Controllers
 {
@@ -37,7 +35,6 @@ namespace PersonalProjectCre8tfolio.Controllers
                 ImagePath = dto.ImagePath
             }).ToList();
 
-            //TODO: aanvragen aan repository om alle DTO's te geven
 
             return View(posts);
         }
@@ -47,17 +44,14 @@ namespace PersonalProjectCre8tfolio.Controllers
         // GET: PortfolioPostController/Details/5
         public ActionResult Details(int id)
         {
-            // Get a specific post by ID from the service
             PortfolioPostDTO postDTO = _portfolioService.GetPost(id);
             if (postDTO == null)
             {
-                return NotFound();  // Return 404 if the post is not found
+                return NotFound();  
             }
 
-            // Get the comments for the specific post
             var comments = _commentService.GetCommentsByPostId(id);
 
-            // Create the PortfolioPost model and assign values
             PortfolioPost post = new PortfolioPost
             {
                 Id = postDTO.Id,
@@ -67,7 +61,7 @@ namespace PersonalProjectCre8tfolio.Controllers
                 Comments = comments
             };
 
-            return View(post);  // Return the view with the post and its comments
+            return View(post);  
         }
 
         [HttpPost]
@@ -121,7 +115,6 @@ namespace PersonalProjectCre8tfolio.Controllers
 
 
         // GET: PortfolioPostController/Edit/5
-        //Needs to Retrieve the data for editing, just like the details GET
         [Authorize]
         public ActionResult Edit(int id)
         {
@@ -144,7 +137,6 @@ namespace PersonalProjectCre8tfolio.Controllers
 
 
         // POST: PortfolioPostController/Edit/5
-        //Needs to Save the changes
         [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]

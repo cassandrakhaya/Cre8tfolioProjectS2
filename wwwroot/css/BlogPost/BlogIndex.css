@@ -72,10 +72,6 @@ h1 {
     grid-template-columns: repeat(3, 1fr); /* Altijd 3 kolommen */
     gap: 20px;  /*Afstand tussen kaarten */
 }
-    /*.grid .card:hover {
-        background-color: #d8c7c7 !important;
-    }
-*/
 
 @media (max-width: 900px) {
     .grid {

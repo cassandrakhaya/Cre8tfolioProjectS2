@@ -1,8 +1,6 @@
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
-using PersonalProjectCre8tfolio.Models;
-using System.Diagnostics;
 using System.Security.Claims;
 
 namespace PersonalProjectCre8tfolio.Controllers
@@ -41,10 +39,6 @@ namespace PersonalProjectCre8tfolio.Controllers
 
 
                 return RedirectToAction("Index", "PortfolioPost");
-                //var claimsIdentity = new ClaimsIdentity(claims, "Login");
-                //await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
-                //return Redirect(ReturnUrl == null ? "/PortfolioPost" : ReturnUrl);
-                //return Redirect (ReturnUrl ?? "/PortfolioPost/Index");
             }
             else
             {

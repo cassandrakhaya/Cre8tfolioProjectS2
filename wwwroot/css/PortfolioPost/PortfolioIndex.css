@@ -113,7 +113,6 @@ ul {
     transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-    /* Hover effect: yellow background with black text */
     .btn:hover {
         background-color: #f3e3e3; /* Yellow background */
         color: #000; /* Black text */
