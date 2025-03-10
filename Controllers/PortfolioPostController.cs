@@ -1,105 +1,192 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Configuration;
-using Microsoft.AspNetCore.Mvc;
-using System.Data;
-using System.Data.SqlClient;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using PersonalProjectCre8tfolio.Models;
+using Cre8tfolioBLL.Services;
+using Cre8tfolioBLL.Dto;
+using System.Data;
 
 namespace PersonalProjectCre8tfolio.Controllers
 {
+
     public class PortfolioPostController : Controller
     {
-        private string Str = @"Data Source=CASCENNDRA\SQLEXPRESS01;Initial Catalog=CRE8TFOLIO;Integrated Security=True;";
-        //private string Str = @"Data Source=CASCENNDRA\SQLEXPRESS01;Initial Catalog=CRE8TFOLIO;Integrated Security=True;Connect Timeout=30;Encrypt=True;Trust Server Certificate=True;Application Intent=ReadWrite;Multi Subnet Failover=False";
-        // GET: PortfolioPostController
+        private readonly CommentService _commentService;
+        private readonly PortfolioService _portfolioService;
+        private readonly IWebHostEnvironment _hostingEnvironment;
+
+
+        public PortfolioPostController(CommentService commentService, PortfolioService portfolioService, IWebHostEnvironment hostingEnvironment)
+        {
+            _commentService = commentService;
+            _portfolioService = portfolioService;
+            _hostingEnvironment = hostingEnvironment;
+
+        }
+
         public ActionResult Index()
         {
-            //TODO: Maak een list van portfolioposts in plaats van een datatable
-            DataTable dt = new DataTable();
-            using (SqlConnection con = new SqlConnection(Str))
+            List<PortfolioPostDTO> postDTOs = _portfolioService.GetAllPosts();
+
+            List<PortfolioPost> posts = postDTOs.Select(dto => new PortfolioPost
             {
-                con.Open();
-                //TODO: Maak duidelijk welke data je ophaalt (welke kolommen) in plaats van *
-                string q = "Select * from PortfolioPost";
-                SqlDataAdapter da = new SqlDataAdapter(q, con);
-                da.Fill(dt);
-            }
-            return View(dt);
+                Id = dto.Id,
+                Title = dto.Title,
+                Description = dto.Description,
+                ImagePath = dto.ImagePath
+            }).ToList();
+
+
+            return View(posts);
         }
+
+
 
         // GET: PortfolioPostController/Details/5
         public ActionResult Details(int id)
         {
-            return View();
+            PortfolioPostDTO postDTO = _portfolioService.GetPost(id);
+            if (postDTO == null)
+            {
+                return NotFound();  
+            }
+
+            var comments = _commentService.GetCommentsByPostId(id);
+
+            PortfolioPost post = new PortfolioPost
+            {
+                Id = postDTO.Id,
+                Title = postDTO.Title,
+                Description = postDTO.Description,
+                ImagePath = postDTO.ImagePath,
+                Comments = comments
+            };
+
+            return View(post);  
+        }
+
+        [HttpPost]
+        public IActionResult AddComment(int portfolioPostId, string content, string author)
+        {
+            if (!string.IsNullOrWhiteSpace(content) && !string.IsNullOrWhiteSpace(author))
+            {
+                _commentService.AddComment(new CommentDTO
+                {
+                    PortfolioPostId = portfolioPostId,
+                    Content = content,
+                    Author = author
+                });
+            }
+
+            return RedirectToAction("Details", new { id = portfolioPostId });
+        }
+
+        [Authorize]
+        [HttpPost]
+        public IActionResult DeleteComment(int commentId, int portfolioPostId)
+        {
+            _commentService.DeleteComment(commentId);
+            return RedirectToAction("Details", new { id = portfolioPostId });
         }
 
         // GET: PortfolioPostController/Create
+        [Authorize]
         public ActionResult Create()
         {
             return View(new PortfolioPost());
         }
 
         // POST: PortfolioPostController/Create
+        [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(PortfolioPost portfolioPost)
+        public ActionResult Create(PortfolioPost portfolioPost, IFormFile? image)
         {
-            try
+            if (!ModelState.IsValid) return View(portfolioPost);
+
+            var postDTO = new PortfolioPostDTO
             {
-                using (SqlConnection con = new SqlConnection(Str))
-                {
-                    con.Open();
-                    //TODO: met parameters gaan werken
-                    string q = "insert into PortfolioPost (Title, Description) values('" + portfolioPost.Title + "','" + portfolioPost.Description + "')";
-                    SqlCommand cmd = new SqlCommand(q, con);
-                    cmd.ExecuteNonQuery();
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View(portfolioPost);
-            }
+                Title = portfolioPost.Title,
+                Description = portfolioPost.Description
+            };
+
+            _portfolioService.CreatePost(postDTO, image, _hostingEnvironment.WebRootPath);
+            return RedirectToAction(nameof(Index));
         }
+
 
         // GET: PortfolioPostController/Edit/5
+        [Authorize]
         public ActionResult Edit(int id)
         {
-            return View();
+            var postDTO = _portfolioService.GetPost(id);
+            if (postDTO == null)
+            {
+                return NotFound();
+            }
+
+            var post = new PortfolioPost
+            {
+                Id = postDTO.Id,
+                Title = postDTO.Title,
+                Description = postDTO.Description,
+                ImagePath = postDTO.ImagePath
+
+            };
+            return View(post);
         }
+
 
         // POST: PortfolioPostController/Edit/5
+        [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public ActionResult Edit(int id, PortfolioPost portfolioPost, IFormFile? image)
         {
-            try
+            if (!ModelState.IsValid) return View(portfolioPost);
+
+            var postDTO = new PortfolioPostDTO
             {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
+                Id = portfolioPost.Id,
+                Title = portfolioPost.Title,
+                Description = portfolioPost.Description,
+                ImagePath = portfolioPost.ImagePath
+            };
+
+            _portfolioService.EditPost(postDTO, image, _hostingEnvironment.WebRootPath);
+            return RedirectToAction(nameof(Index));
         }
 
+
         // GET: PortfolioPostController/Delete/5
+        [Authorize]
         public ActionResult Delete(int id)
         {
-            return View();
+            PortfolioPostDTO postDTO = _portfolioService.GetPost(id);
+            if (postDTO == null)
+            {
+                return NotFound();
+            }
+
+            PortfolioPost post = new PortfolioPost
+            {
+                Id = postDTO.Id,
+                Title = postDTO.Title,
+                Description = postDTO.Description,
+                ImagePath = postDTO.ImagePath
+
+            };
+            return View(post);
         }
 
         // POST: PortfolioPostController/Delete/5
+        [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        public ActionResult Delete(PortfolioPost portfolioPost, int id)
         {
             try
             {
+                _portfolioService.DeletePost(id, _hostingEnvironment.WebRootPath);
                 return RedirectToAction(nameof(Index));
             }
             catch
@@ -107,5 +194,6 @@ namespace PersonalProjectCre8tfolio.Controllers
                 return View();
             }
         }
-    }
+
+    }  
 }

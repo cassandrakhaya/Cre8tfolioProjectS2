@@ -3,20 +3,22 @@
 @{
     ViewData["Title"] = "Edit";
 }
-
+<link rel="stylesheet" href="~/css/BlogPost/BlogIndex.css" />
 <h1>Edit</h1>
 
 <h4>PortfolioPost</h4>
 <hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
+
+@* <link rel="stylesheet" href="~/css/PortfolioEdit.css" /> *@
+
+<div class="edit-container">
+    <div class="inner-container">
+        @if (!string.IsNullOrEmpty(Model.ImagePath))
+        {
+            <img src="@Model.ImagePath" alt="Portfolio Post Image" class="img-thumbnail" style="max-width: 100%; height:auto; margin-bottom: 20px;" />
+        }
+        <form asp-action="Edit" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Id" class="control-label"></label>
-                <input asp-for="Id" class="form-control" />
-                <span asp-validation-for="Id" class="text-danger"></span>
-            </div>
             <div class="form-group">
                 <label asp-for="Title" class="control-label"></label>
                 <input asp-for="Title" class="form-control" />
@@ -24,20 +26,29 @@
             </div>
             <div class="form-group">
                 <label asp-for="Description" class="control-label"></label>
-                <input asp-for="Description" class="form-control" />
+                <textarea asp-for="Description" class="form-control"></textarea>
                 <span asp-validation-for="Description" class="text-danger"></span>
-            </div>
-           @*  <div class="form-group">
-                <label asp-for="DateCreated" class="control-label"></label>
-                <input asp-for="DateCreated" class="form-control" />
-                <span asp-validation-for="DateCreated" class="text-danger"></span>
+                <script>
+                    const textarea = document.getElementById('content');
+                    const displayDiv = document.getElementById('formatted-content');
+
+                    textarea.addEventListener('input', () => {
+                        const formattedText = textarea.value.replace(/\n/g, '<br>');
+                        displayDiv.innerHTML = formattedText;
+                    });
+                </script>
             </div>
             <div class="form-group">
-                <label asp-for="DateUpdated" class="control-label"></label>
-                <input asp-for="DateUpdated" class="form-control" />
-                <span asp-validation-for="DateUpdated" class="text-danger"></span> *@
-            @* </div> *@qw
+                <label for="Image">Upload Image</label>
+                <input type="file" id="Image" name="Image" class="form-control-file" accept="image/*" />
+                <span asp-validation-for="ImagePath" class="text-danger"></span>
+
+            </div>
             <div class="form-group">
+                <input type="hidden" asp-for="ImagePath" />
+            </div>
+            <div class="form-group">
+                <br />
                 <input type="submit" value="Save" class="btn btn-primary" />
             </div>
         </form>
@@ -45,9 +56,17 @@
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <br />
+    <a asp-action="Index" class="btn btn-primary btn-lg">Back to List</a>
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }
+
+
+
+
+

@@ -1,0 +1,19 @@
+﻿@model PersonalProjectCre8tfolio.Models.Comment
+
+<div class="delete-container">
+    <div class="inner-container text-center">
+        <h1>Delete Confirmation</h1>
+        <h3>Are you sure you want to delete the comment: <strong>@Model.Content</strong>?</h3>
+        <hr />
+        <form asp-action="ConfirmDelete" method="post">
+            <!-- Hidden input for Comment -->
+            <input type="hidden" asp-for="Author" />
+
+            <!-- Buttons for actions -->
+            <div class="btn-group" role="group" aria-label="Delete options">
+                <button type="submit" class="btn btn-danger">Yes, Delete</button>
+                <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>

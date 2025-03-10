@@ -1,48 +1,92 @@
-﻿/* Please see documentation at https://learn.microsoft.com/aspnet/core/client-side/bundling-and-minification
-for details on configuring this project to bundle and minify static web assets. */
-
-a.navbar-brand {
-  white-space: normal;
-  text-align: center;
-  word-break: break-all;
+﻿.main-container {
+    display: flex; /* Gebruik flexbox voor een zij-aan-zij lay-out */
 }
 
-a {
-  color: #0077cc;
+/* Sidebar CSS */
+.sidebar {
+    height: 100vh; /* Volledige hoogte van de viewport */
+    width: 250px; /* Breedte van de sidebar */
+    background-color: #875858 /*#f6de82*/; /* Sidebar achtergrondkleur */
+    padding-top: 20px;
+    box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+    overflow-y: auto; /* Scrollen als content te lang is */
+    position: fixed; /* Zorgt ervoor dat de sidebar vast blijft staan aan de linkerkant */
+    left: 0;
+    top: 0;
+    padding-left: 10px;
+    color: #fff;
 }
 
-.btn-primary {
-  color: #fff;
-  background-color: #1b6ec2;
-  border-color: #1861ac;
+    /* Stijlen voor de navigatie-links in de sidebar */
+    .sidebar a, .sidebar .nav-link {
+        display: block;
+        padding: 10px 15px;
+        text-decoration: none;
+        font-size: 18px;
+        color: #fff;
+        margin-bottom: 10px;
+        border-radius: 4px;
+    }
+
+        .sidebar a:hover, .sidebar .nav-link:hover {
+            background-color: #f3e3e4; /* Kleur bij hover */
+            color: #000; /* Tekstkleur bij hover */
+        }
+
+/* Content sectie naast de sidebar */
+.content {
+    margin-left: 270px; /* Zorg dat de content rechts van de sidebar start */
+    padding: 20px;
+    width: calc(100% - 270px); /* Breedte aanpassen op basis van de sidebar */
 }
+/* General button styling */
+.btn {
+    display: inline-block;
+    padding: 12px 20px;
+    font-size: 14px;
+    font-weight: bold;
+    text-align: center;
+    cursor: pointer;
+    text-decoration: none;
+    border: none;
+    border-radius: 5px;
+    transition: background-color 0.3s, box-shadow 0.3s;
+    margin-right: 10px; /* Space between buttons */
+    color: #333;
+}
+
+    .btn:hover {
+        background-color: #f89d9d; /* Yellow background */
+        color: #000; /* Black text */
+    }
 
 .nav-pills .nav-link.active, .nav-pills .show > .nav-link {
-  color: #fff;
-  background-color: #1b6ec2;
-  border-color: #1861ac;
+    color: #fff;
+    background-color: #f55656;
+    border-color: #1861ac;
 }
 
 .border-top {
-  border-top: 1px solid #e5e5e5;
+    border-top: 1px solid #e5e5e5;
 }
+
 .border-bottom {
-  border-bottom: 1px solid #e5e5e5;
+    border-bottom: 1px solid #e5e5e5;
 }
 
 .box-shadow {
-  box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
+    box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
 }
 
 button.accept-policy {
-  font-size: 1rem;
-  line-height: inherit;
+    font-size: 1rem;
+    line-height: inherit;
 }
 
-.footer {
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  white-space: nowrap;
-  line-height: 60px;
-}
+/*.footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    white-space: nowrap;
+    line-height: 60px;
+}*/

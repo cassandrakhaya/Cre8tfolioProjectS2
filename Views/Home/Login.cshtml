@@ -1,0 +1,22 @@
+﻿
+<link rel="stylesheet" href="~/css/BlogPost/BlogIndex.css" />
+
+<h1>LOGIN PAGE</h1>
+
+<form method="post">
+    <input type="text" name="username" placeholder="Type Username" />
+    <input type="password" name="password" placeholder="Type Password" />
+    <button class="btn btn-primary">Login</button>
+    
+    <input type="hidden" name="returnUrl" value="@Context.Request.Query["ReturnUrl"]" />
+
+</form>
+<br />
+<br />
+<br /> 
+<br />
+<br />
+<br />
+<form asp-controller="Home" asp-action="Logout" method="post">
+    <button class="btn btn-primary btn-lg">Logout</button>
+</form>
